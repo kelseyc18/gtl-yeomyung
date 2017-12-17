@@ -43,7 +43,7 @@ window.Polymer = {
       settings.nativeShadow = settings.hasShadow && !window.ShadowDOMPolyfill;
       settings.useShadow = settings.wantShadow && settings.hasShadow;
 
-      settings.hasNativeImports = 
+      settings.hasNativeImports =
         Boolean('import' in document.createElement('link'));
       settings.useNativeImports = settings.hasNativeImports;
 
@@ -52,7 +52,7 @@ window.Polymer = {
 
       settings.useNativeShadow = settings.useShadow && settings.nativeShadow;
 
-      settings.usePolyfillProto = !settings.useNativeCustomElements && 
+      settings.usePolyfillProto = !settings.useNativeCustomElements &&
         !Object.__proto__;
 
       return settings;
@@ -86,7 +86,7 @@ window.Polymer = {
       var options = {
         prototype: prototype
       };
-      // NOTE: we're specifically supporting older Chrome versions here 
+      // NOTE: we're specifically supporting older Chrome versions here
       // (specifically Chrome 39) that throw when options.extends is undefined.
       if (prototype.extends) {
         options.extends = prototype.extends;
@@ -810,19 +810,19 @@ Polymer.Base._addFeature({
   });
 /**
    * Generates a boilerplate constructor.
-   * 
+   *
    *     XFoo = Polymer({
    *       is: 'x-foo'
    *     });
    *     ASSERT(new XFoo() instanceof XFoo);
-   *  
-   * You can supply a custom constructor on the prototype. But remember that 
+   *
+   * You can supply a custom constructor on the prototype. But remember that
    * this constructor will only run if invoked **manually**. Elements created
    * via `document.createElement` or from HTML _will not invoke this method_.
-   * 
-   * Instead, we reuse the concept of `constructor` for a factory method which 
-   * can take arguments. 
-   * 
+   *
+   * Instead, we reuse the concept of `constructor` for a factory method which
+   * can take arguments.
+   *
    *     MyFoo = Polymer({
    *       is: 'my-foo',
    *       constructor: function(foo) {
@@ -830,7 +830,7 @@ Polymer.Base._addFeature({
    *       }
    *       ...
    *     });
-   * 
+   *
    * @class base feature: constructor
    */
 
@@ -842,16 +842,16 @@ Polymer.Base._addFeature({
       // support both possible `createElement` signatures
       this._factoryArgs = this.extends ? [this.extends, this.is] : [this.is];
       // thunk the constructor to delegate allocation to `createElement`
-      var ctor = function() { 
-        return this._factory(arguments); 
+      var ctor = function() {
+        return this._factory(arguments);
       };
       if (this.hasOwnProperty('extends')) {
-        ctor.extends = this.extends; 
+        ctor.extends = this.extends;
       }
       // ensure constructor is set. The `constructor` property is
       // not writable on Safari; note: Chrome requires the property
       // to be configurable.
-      Object.defineProperty(this, 'constructor', {value: ctor, 
+      Object.defineProperty(this, 'constructor', {value: ctor,
         writable: true, configurable: true});
       ctor.prototype = this;
     },
@@ -1444,7 +1444,7 @@ Polymer.Base._addFeature({
     // never changes
     _registerHost: function(host) {
       // NOTE: The `dataHost` of an element never changes.
-      this.dataHost = host = host || 
+      this.dataHost = host = host ||
         Polymer.Base._hostStack[Polymer.Base._hostStack.length-1];
       if (host && host._clients) {
         host._clients.push(this);
@@ -2334,11 +2334,11 @@ Polymer.domInnerHTML = (function() {
 
       // NOTE: `_query` is used primarily for ShadyDOM's querySelector impl,
       // but it's also generally useful to recurse through the element tree
-      // and is used by Polymer's styling system. 
+      // and is used by Polymer's styling system.
       _query: function(matcher, node, halter) {
         node = node || this.node;
         var list = [];
-        this._queryElements(TreeApi.Logical.getChildNodes(node), matcher, 
+        this._queryElements(TreeApi.Logical.getChildNodes(node), matcher,
           halter, list);
         return list;
       },
@@ -2361,7 +2361,7 @@ Polymer.domInnerHTML = (function() {
         if (halter && halter(result)) {
           return result;
         }
-        this._queryElements(TreeApi.Logical.getChildNodes(node), matcher, 
+        this._queryElements(TreeApi.Logical.getChildNodes(node), matcher,
           halter, list);
       }
 
@@ -3354,8 +3354,8 @@ Polymer.EventApi = (function() {
   var useShadow = Polymer.Settings.useShadow;
 
   /**
-   * DomApi.classList allows maniuplation of `classList` compatible with 
-   * Polymer.dom. The general usage is 
+   * DomApi.classList allows maniuplation of `classList` compatible with
+   * Polymer.dom. The general usage is
    * `Polymer.dom(node).classList.method(arguments)` where methods and arguments
    * match native DOM.
    */
@@ -3662,7 +3662,7 @@ Polymer.EventApi = (function() {
     var Settings = Polymer.Settings;
 
     /**
-     * DomApi.DistributedNodesObserver notifies when the list returned by 
+     * DomApi.DistributedNodesObserver notifies when the list returned by
      * a <content> element's `getDistributedNodes()` may have changed.
      * It is not meant to be used directly; it is used by
      * `Polymer.dom(node).observeNodes(callback)` to observe changes to
@@ -3672,7 +3672,7 @@ Polymer.EventApi = (function() {
       DomApi.EffectiveNodesObserver.call(this, domApi);
     };
 
-    DomApi.DistributedNodesObserver.prototype = 
+    DomApi.DistributedNodesObserver.prototype =
       Object.create(DomApi.EffectiveNodesObserver.prototype);
 
     Polymer.Base.extend(DomApi.DistributedNodesObserver.prototype, {
@@ -3694,9 +3694,9 @@ Polymer.EventApi = (function() {
     });
 
     if (Settings.useShadow) {
-      
+
       Polymer.Base.extend(DomApi.DistributedNodesObserver.prototype, {
-        
+
         // NOTE: Under ShadowDOM we must observe the host element for
         // changes.
         _setup: function() {
@@ -3709,8 +3709,8 @@ Polymer.EventApi = (function() {
                 self._scheduleNotify();
               });
               // NOTE: we identify this listener as needed for <content>
-              // notification so that enableShadowAttributeTracking 
-              // can find these observers an ensure that we pass always 
+              // notification so that enableShadowAttributeTracking
+              // can find these observers an ensure that we pass always
               // pass notifications down.
               this._observer._isContentListener = true;
               if (this._hasAttrSelect()) {
@@ -3735,7 +3735,7 @@ Polymer.EventApi = (function() {
         }
 
       });
-    
+
     }
 
 })();
@@ -4216,7 +4216,7 @@ Polymer.EventApi = (function() {
       distributeContent: function() {},
       _distributeContent: function() {},
       _finishDistribute: function() {},
-      
+
       // create a shadowRoot
       _createLocalRoot: function() {
         this.createShadowRoot();
@@ -4285,18 +4285,18 @@ new window.MutationObserver(function() {
     Polymer.Async._atEndOfMicrotask();
   }).observe(Polymer.Async._twiddle, {characterData: true});
 Polymer.Debounce = (function() {
-  
+
   // usage
-  
+
   // invoke cb.call(this) in 100ms, unless the job is re-registered,
   // which resets the timer
-  // 
+  //
   // this.job = this.debounce(this.job, cb, 100)
   //
   // returns a handle which can be used to re-register a job
 
   var Async = Polymer.Async;
-  
+
   var Debouncer = function(context) {
     this.context = context;
     var self = this;
@@ -4304,7 +4304,7 @@ Polymer.Debounce = (function() {
       self.complete();
     }
   };
-  
+
   Debouncer.prototype = {
     go: function(callback, wait) {
       var h;
@@ -4339,11 +4339,11 @@ Polymer.Debounce = (function() {
     debouncer.go(callback, wait);
     return debouncer;
   }
-  
-  // exports 
+
+  // exports
 
   return debounce;
-  
+
 })();
 Polymer.Base._addFeature({
 
@@ -4843,17 +4843,17 @@ Polymer.DomModule = document.createElement('dom-module');
   };
 (function() {
 
-    // path fixup for urls in cssText that's expected to 
+    // path fixup for urls in cssText that's expected to
     // come from a given ownerDocument
     function resolveCss(cssText, ownerDocument) {
       return cssText.replace(CSS_URL_RX, function(m, pre, url, post) {
-        return pre + '\'' + 
-          resolve(url.replace(/["']/g, ''), ownerDocument) + 
+        return pre + '\'' +
+          resolve(url.replace(/["']/g, ''), ownerDocument) +
           '\'' + post;
       });
     }
 
-    // url fixup for urls in an element's attributes made relative to 
+    // url fixup for urls in an element's attributes made relative to
     // ownerDoc's base url
     function resolveAttrs(element, ownerDocument) {
       for (var name in URL_ATTRS) {
@@ -4876,7 +4876,7 @@ Polymer.DomModule = document.createElement('dom-module');
       // do not resolve '#' links, they are used for routing
       if (url && url[0] === '#') {
         return url;
-      }      
+      }
       var resolver = getUrlResolver(ownerDocument);
       resolver.href = url;
       return resolver.href || url;
@@ -4895,7 +4895,7 @@ Polymer.DomModule = document.createElement('dom-module');
     }
 
     function getUrlResolver(ownerDocument) {
-      return ownerDocument.__urlResolver || 
+      return ownerDocument.__urlResolver ||
         (ownerDocument.__urlResolver = ownerDocument.createElement('a'));
     }
 
@@ -8417,7 +8417,7 @@ Polymer.StyleUtil = (function() {
       applyCss: function(cssText, moniker, target, contextNode) {
         var style = this.createScopeStyle(cssText, moniker);
         target = target || document.head;
-        var after = (contextNode && contextNode.nextSibling) || 
+        var after = (contextNode && contextNode.nextSibling) ||
           target.firstChild;
         this.__lastHeadApplyNode = style;
         return target.insertBefore(style, after);
@@ -8436,9 +8436,9 @@ Polymer.StyleUtil = (function() {
 
       // insert a comment node as a styling position placeholder.
       applyStylePlaceHolder: function(moniker) {
-        var placeHolder = document.createComment(' Shady DOM styles for ' + 
+        var placeHolder = document.createComment(' Shady DOM styles for ' +
           moniker + ' ');
-        var after = this.__lastHeadApplyNode ? 
+        var after = this.__lastHeadApplyNode ?
           this.__lastHeadApplyNode.nextSibling : null;
         var scope = document.head;
         scope.insertBefore(placeHolder, after || scope.firstChild);
@@ -8881,9 +8881,9 @@ Polymer.StyleExtends = (function() {
       },
 
       _prepStyles: function() {
-        // under shady dom we always output a shimmed style (which may be 
-        // empty) so that other dynamic stylesheets can always be placed 
-        // after the element's main stylesheet. 
+        // under shady dom we always output a shimmed style (which may be
+        // empty) so that other dynamic stylesheets can always be placed
+        // after the element's main stylesheet.
         // This helps ensure element styles are always in registration order.
         if (!nativeShadow) {
           this._scopeStyle = styleUtil.applyStylePlaceHolder(this.is);
@@ -9357,7 +9357,7 @@ Polymer.StyleProperties = (function() {
       // note: we use only the scope class (.x-foo-42) and not the hostSelector
       // (x-foo) to scope :host rules; this helps make property host rules
       // have low specificity. They are overrideable by class selectors but,
-      // unfortunately, not by type selectors (e.g. overriding via 
+      // unfortunately, not by type selectors (e.g. overriding via
       // `.special` is ok, but not by `x-foo`).
       _scopeSelector: function(rule, hostRx, hostSelector, viaAttr, scopeId) {
         rule.transformedSelector = rule.transformedSelector || rule.selector;
@@ -9477,7 +9477,7 @@ Polymer.StyleProperties = (function() {
   };
 
   Polymer.StyleCache.prototype = {
-    
+
     MAX: 100,
 
     store: function(is, data, keyValues, keyStyles) {
@@ -9509,13 +9509,13 @@ Polymer.StyleProperties = (function() {
     },
 
     // note, this is intentially limited to support just the cases we need
-    // right now. The objects we're checking here are either objects that must 
+    // right now. The objects we're checking here are either objects that must
     // always have the same keys OR arrays.
     _objectsEqual: function(target, source) {
       var t, s;
       for (var i in target) {
         t = target[i], s = source[i];
-        if (!(typeof t === 'object' && t ? this._objectsStrictlyEqual(t, s) : 
+        if (!(typeof t === 'object' && t ? this._objectsStrictlyEqual(t, s) :
             t === s)) {
           return false;
         }
@@ -9527,7 +9527,7 @@ Polymer.StyleProperties = (function() {
     },
 
     _objectsStrictlyEqual: function(target, source) {
-      return this._objectsEqual(target, source) && 
+      return this._objectsEqual(target, source) &&
         this._objectsEqual(source, target);
     }
 
@@ -9951,7 +9951,7 @@ Polymer.Base._addFeature({
       // acquire instance behaviors
       this._marshalBehaviors();
       /*
-      TODO(sorvell): It's *slightly() more efficient to marshal attributes prior 
+      TODO(sorvell): It's *slightly() more efficient to marshal attributes prior
       to installing hostAttributes, but then hostAttributes must be separately
       funneled to configure, which is cumbersome.
       Since this delta seems hard to measure we will not bother atm.
@@ -10567,11 +10567,11 @@ Polymer.Base._addFeature({
 /**
    * Creates a pseudo-custom-element that maps property values to bindings
    * in DOM.
-   * 
+   *
    * `stamp` method creates an instance of the pseudo-element. The instance
    * references a document-fragment containing the stamped and bound dom
-   * via it's `root` property. 
-   *  
+   * via it's `root` property.
+   *
    */
   Polymer({
 
@@ -11830,9 +11830,9 @@ Polymer({
       Polymer.RenderStatus.whenReady(function() {
         if (document.readyState == 'loading') {
           document.addEventListener('DOMContentLoaded', function() {
-            self._markImportsReady(); 
+            self._markImportsReady();
           });
-        } else {  
+        } else {
           self._markImportsReady();
         }
       });
@@ -16313,7 +16313,7 @@ Polymer({
             try {
               result = neonAnimation.configure(config);
               // Check if we have an Effect rather than an Animation
-              if (typeof result.cancel != 'function') { 
+              if (typeof result.cancel != 'function') {
                 result = document.timeline.play(result);
               }
             } catch (e) {
@@ -17187,7 +17187,7 @@ Polymer({
             this.toggleClass("transition-drawer", true, this.$.drawer);
             this.selected = 'drawer';
           }.bind(this));
-          
+
         },
 
         /**
@@ -18324,7 +18324,7 @@ within `fitInto` boundaries, while preserving the element's CSS margin values.
       if (typeof this._isRTL === 'undefined') {
         this._isRTL = window.getComputedStyle(this).direction == 'rtl';
       }
-          
+
       this.positionTarget = this.positionTarget || this._defaultPositionTarget;
       if (this.autoFitOnAttach) {
         if (window.getComputedStyle(this).display === 'none') {
@@ -20638,25 +20638,26 @@ Polymer({
       },
 
       _goToHome: function () {
-        // extract 'index' search param
-        var index;
-        var parts = location.search.substring(1).split('&');
-        for (var i = 0; i < parts.length; i++) {
-          var param = parts[i].split('=');
-          if (param[0] === 'index') {
-            index = param[1];
-            break;
-          }
-        }
-        // decode and extract index name from the search param
-        // default index is 'index'
-        index = index ? decodeURIComponent(index) : '';
-        index = index.replace(/[^a-z0-9\-]+/ig, '');
-        if (index === 'index') {
-          index = '';
-        }
-        // navigate away to the index page
-        window.location.href = '/' + index;
+        // // extract 'index' search param
+        // var index;
+        // var parts = location.search.substring(1).split('&');
+        // for (var i = 0; i < parts.length; i++) {
+        //   var param = parts[i].split('=');
+        //   if (param[0] === 'index') {
+        //     index = param[1];
+        //     break;
+        //   }
+        // }
+        // // decode and extract index name from the search param
+        // // default index is 'index'
+        // index = index ? decodeURIComponent(index) : '';
+        // index = index.replace(/[^a-z0-9\-]+/ig, '');
+        // if (index === 'index') {
+        //   index = '';
+        // }
+        // // navigate away to the index page
+        // window.location.href = '/' + index;
+        window.location.href = 'https://kelseyc18.github.io/gtl-yeomyung/';
       },
 
       _tocItemClass: function(selected, i) {
